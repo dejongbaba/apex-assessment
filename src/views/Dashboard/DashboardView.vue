@@ -14,19 +14,29 @@ export default {
   },
   methods: {
     ...mapActions({
-      getPayments: 'payments/getPayments'
+      getPayments: 'payments/getPayments', getPagedPayments: 'payments/getPagedPayments'
     }),
+    getPaginatedPayments(value) {
+      this.getPagedPayments(value)
+    }, getPaymentResults(e) {
+      console.log('eee', e.target.value)
+      this.getPayments({currentPage: this.page, perPage: e.target.value})
+    }
   },
   computed: {
     ...mapState({
       payments: (state) => state.payments.payments,
       page: (state) => state.payments.page,
       perPage: (state) => state.payments.perPage,
-      type: (state) => state.payments.type
+      type: (state) => state.payments.type,
+      links: (state) => state.payments.links
     })
   },
   mounted() {
-    this.getPayments().then((res) => console.log('res', res)).catch((e) => Promise.reject(e))
+    this.getPayments({
+      currentPage: 1,
+      perPage: 10
+    }).then((res) => console.log('res', res)).catch((e) => Promise.reject(e))
   }
 }
 </script>
@@ -38,7 +48,8 @@ export default {
     <!-- Breadcrumb End -->
 
     <div class="flex flex-col gap-10">
-      <Table :payments="payments"/>
+      <Table :links="links" :onPress="getPaginatedPayments" :onShowResult="getPaymentResults" :page="page"
+             :payments="payments"/>
     </div>
   </DefaultLayout>
 </template>

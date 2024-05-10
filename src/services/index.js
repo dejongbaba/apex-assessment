@@ -1,6 +1,8 @@
 import axios from "axios";
 import NProgress from 'nprogress'
 
+NProgress.configure({easing: 'ease', speed: 500})
+
 const Api = axios.create({
     baseURL: import.meta.env.VITE_APP_BASE_URL,
 });

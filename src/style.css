@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+#nprogress .bar {
+    background-color: #10AE60;
+    height: 5px;
+}

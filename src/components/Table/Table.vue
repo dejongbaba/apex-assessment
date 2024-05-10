@@ -2,9 +2,17 @@
 import FilterImage from '@/assets/images/filter.svg'
 import InputGroup from '../InputGroup/InputGroup.vue'
 import SelectGroup from '../SelectGroup/SelectGroup.vue'
+import {ref} from "vue";
 
-const props = defineProps(['payments'])
+const props = defineProps(['payments', 'page', 'links', 'onPress', 'onShowResult'])
 
+const filter = ref(false);
+
+
+const onToggleFilter = () => {
+  filter.value = !filter.value;
+}
+console.log('filter', filter.value)
 
 //add on click button for filter , toggle filter section
 // add on filter select populate filter object
@@ -16,7 +24,8 @@ const props = defineProps(['payments'])
   >
     <div class="py-6 px-4 md:px-6 xl:px-7.5 flex sm:justify-end">
       <button
-          class="text-xl font-light bg-body border-gray-100 border-2 px-6 py-3 rounded-xl flex items-center gap-2 text-primary">
+          class="text-xl font-light bg-body border-gray-100 border-2 px-6 py-3 rounded-xl flex items-center gap-2 text-primary"
+          @click="onToggleFilter">
         <img
             :src="FilterImage"
             alt="filter icon">
@@ -25,8 +34,8 @@ const props = defineProps(['payments'])
     </div>
 
     <!--filters    -->
-    <div
-        class="grid grid-cols-8 gap-4  py-4.5 px-4 sm:grid-cols-8 md:px-6 2xl:px-7.5"
+    <div v-if="filter"
+         class="grid grid-cols-8 gap-4  py-4.5 px-4 sm:grid-cols-8 md:px-6 2xl:px-7.5"
     >
 
       <div class="col-span-2 flex items-center py-5">
@@ -132,7 +141,12 @@ const props = defineProps(['payments'])
         <p class="text-sm font-medium text-secondary ">{{ payment.currency }}</p>
       </div>
       <div class="col-span-1 space-y-1 py-4">
-        <img alt="dots menu" src="@/assets/images/dots-vertical.svg">
+        <div class='relative group'>
+          <img alt="dots menu" src="@/assets/images/dots-vertical.svg">
+          <div class='absolute  bg-white px-6 py-2 shadow'>
+            Pay due
+          </div>
+        </div>
       </div>
 
     </div>
@@ -140,26 +154,40 @@ const props = defineProps(['payments'])
     <div class='flex flex-col border-t sm:flex-row justify-between px-5'>
       <div class='flex gap-2 items-center px-5 py-6'>
         <span class='text-secondary text-base'>Show result:</span>
-        <select class="border border-2 rounded-lg border-gray-200 ">
-          <option value="6">6</option>
-          <option value="7">7</option>
+        <select class="border border-2 rounded-lg border-gray-200 " @change="onShowResult">
           <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="40">40</option>
+          <option value="50">50</option>
+          <option value="60">60</option>
+          <option value="70">70</option>
+          <option value="80">80</option>
+          <option value="90">90</option>
+          <option value="100">100</option>
         </select>
       </div>
       <div class="flex gap-2 items-center">
-        <div class="">
-          <img alt="previous arrow" src="@/assets/images/chevron-left.svg">
-        </div>
-        <div
-            class='text-secondary text-base rounded-lg bg-green-200 text-green-500 w-8 h-8 flex items-center justify-center '>
-          1
-        </div>
-        <div class='text-secondary text-base rounded-lg  w-8 h-8 flex items-center justify-center '>2</div>
-        <div class='text-secondary text-base rounded-lg  w-8 h-8 flex items-center justify-center '>3</div>
-        <div class='text-secondary text-base rounded-lg  w-8 h-8 flex items-center justify-center '>4</div>
-        <div class="">
-          <img alt="next arrow" src="@/assets/images/chevron-right.svg">
-        </div>
+        <!--        <div class="">-->
+        <!--        </div>-->
+        <!--        <div-->
+        <!--            class='text-secondary text-base rounded-lg bg-green-200 text-green-500 w-8 h-8 flex items-center justify-center '>-->
+        <!--          1-->
+        <!--        </div>-->
+
+        <button v-for="link in links"
+                :key="link.label" :class="page == link.label ?'bg-green-200 text-green-500':''"
+                class='text-secondary text-base rounded-lg  w-8 h-8 flex items-center justify-center '
+                @click="onPress(link.url)">
+          <img v-if="link.label.includes('Previous')" alt="previous arrow" src="@/assets/images/chevron-left.svg">
+          <img v-else-if="link.label.includes('Next')" alt="previous arrow" src="@/assets/images/chevron-right.svg">
+          <span v-else>{{ link.label }}</span>
+        </button>
+        <!--        <div class='text-secondary text-base rounded-lg  w-8 h-8 flex items-center justify-center '>3</div>-->
+        <!--        <div class='text-secondary text-base rounded-lg  w-8 h-8 flex items-center justify-center '>4</div>-->
+        <!--        <div class="">-->
+        <!--          <img alt="next arrow" src="@/assets/images/chevron-right.svg">-->
+        <!--        </div>-->
       </div>
 
     </div>
