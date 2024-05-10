@@ -7,5 +7,6 @@ for proper payment analysis with support for different forms of data filtering
 
 - Clone the project on your local device
 - change directory into the projects root folder
-- run ```npm install```
-- run ```npm run dev```
+- run ```yarn install```
+- create .env file and add the key ```VITE_APP_BASE_URL = https://apex-payments-eca4dc83534e.herokuapp.com/api/```
+- run ```yarn dev```

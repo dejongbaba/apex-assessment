@@ -1,10 +1,7 @@
-import Vue from 'vue'
 import Vuex from 'vuex'
 
 import payments from '@/store/payments/payments'
 
-
-Vue.use(Vuex)
 
 export default new Vuex.Store({
     modules: {

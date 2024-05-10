@@ -1,7 +1,23 @@
 import axios from "axios";
+import NProgress from 'nprogress'
 
 const Api = axios.create({
-    baseURL: process.env.VUE_APP_BASE_URL,
+    baseURL: import.meta.env.VITE_APP_BASE_URL,
 });
-
+Api.interceptors.request.use(
+    config => {
+        NProgress.start()
+        return config
+    }
+)
+Api.interceptors.response.use(
+    data => {
+        NProgress.done()
+        return data
+    },
+    error => {
+        NProgress.done()
+        return Promise.reject(error)
+    }
+)
 export default Api;

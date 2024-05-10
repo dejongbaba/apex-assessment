@@ -1,4 +1,4 @@
-<script lang="ts" setup></script>
+<script setup></script>
 
 <template>
   <div ref="target" class="relative">
@@ -13,8 +13,8 @@
 
 
       <span class="hidden lg:block">
-        <span class="block text-sm font-bold text-black ">Thomas Anree</span>
-        <span class="block text-xs font-light text-secondary">UX Designer</span>
+        <span class="block text-sm font-bold text-black ">Tynisha Obey</span>
+        <span class="block text-xs font-light text-secondary">Makostore</span>
       </span>
 
     </router-link>
