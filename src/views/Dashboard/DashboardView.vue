@@ -3,6 +3,9 @@ import {mapActions, mapState} from "vuex";
 import DefaultLayout from '../../layouts/DefaultLayout.vue';
 import BreadcrumbDefault from '../../components/Breadcrumbs/BreadcrumbDefault.vue';
 import Table from '../../components/Table/Table.vue';
+import {useToast} from "vue-toast-notification";
+
+const $toast = useToast();
 
 // const pageTitle = ref('Tables')
 // const filters = defineModel({amount: '', name: '', userStatus: '', paymentStatus: ''});
@@ -25,11 +28,16 @@ export default {
       console.log('eee', e.target.value)
       this.getPayments({currentPage: this.page, perPage: e.target.value})
     },
-    onFilterTable() {
-
+    onFilterTable(filterState) {
+      this.getPayments({currentPage: this.page, perPage: this.perPage, type: filterState.paymentStatus})
     },
     onPay(payment) {
-      this.makePayment({payments: [payment]})
+      this.makePayment({payments: [payment.id]}).then(() => {
+        let paymentType;
+        paymentType = payment.payment_made_at === null && new Date(payment.payment_expected_at) > new Date() ? 'unpaid' : new Date(payment.payment_expected_at) < new Date() ? 'overdue' : payment.payment_made_at !== null ? 'paid' : ''
+        $toast.success('Due payed successfully')
+        this.getPayments({currentPage: this.page, perPage: this.perPage, type: paymentType})
+      })
     },
     getTabPayments(tab) {
       this.getPayments({currentPage: this.page, perPage: this.perPage, type: tab})
@@ -60,9 +68,11 @@ export default {
     <!-- Breadcrumb End -->
 
     <div class="flex flex-col gap-10">
-      <Table :links="links" :onPayDue="onPay" :onPress="getPaginatedPayments" :onShowResult="getPaymentResults"
+      <Table :links="links" :onPayDue="onPay" :onPress="getPaginatedPayments" :onShowFilterResults="onFilterTable"
+             :onShowResult="getPaymentResults"
              :page="page"
-             :payments="payments"/>
+             :payments="payments"
+             @filter-data="onFilterTable"/>
     </div>
   </DefaultLayout>
 </template>

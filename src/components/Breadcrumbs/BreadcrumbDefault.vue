@@ -27,21 +27,21 @@ that
   <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <nav>
       <div class='flex gap-4'>
-        <button :class="state.active==='all'?' border-b-4 border-primary' :''"
-                class='text-secondary py-3 cursor-pointer font-light text-base'
+        <button :class="state.active==='all'?'  border-primary' :'border-transparent'"
+                class='text-secondary py-3 border-b-4 cursor-pointer font-light text-base'
                 @click="onSetActive('all')">
           All
         </button>
-        <button :class="state.active==='paid'?'border-b-4 border-primary' :''"
-                class='text-secondary py-3 cursor-pointer font-light text-base'
+        <button :class="state.active==='paid'?' border-primary' :'border-transparent'"
+                class='text-secondary py-3  border-b-4 cursor-pointer font-light text-base'
                 @click="onSetActive('paid')">Paid
         </button>
-        <button :class="state.active==='unpaid'?'border-b-4 border-primary' :''"
-                class='text-secondary cursor-pointer font-light text-base py-3'
+        <button :class="state.active==='unpaid'?' border-primary' :'border-transparent'"
+                class='text-secondary cursor-pointer border-b-4 font-light text-base py-3'
                 @click="onSetActive('unpaid')">Unpaid
         </button>
-        <button :class="state.active==='overdue'?'border-b-4 border-primary' :''"
-                class='text-secondary cursor-pointer font-light text-base py-3'
+        <button :class="state.active==='overdue'?' border-primary' :'border-transparent'"
+                class='text-secondary cursor-pointer border-b-4 font-light text-base py-3'
                 @click="onSetActive('overdue')">Overdue
         </button>
       </div>

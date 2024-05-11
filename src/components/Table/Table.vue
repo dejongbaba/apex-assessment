@@ -3,24 +3,27 @@ import FilterImage from '@/assets/images/filter.svg'
 import InputGroup from '../InputGroup/InputGroup.vue'
 import SelectGroup from '../SelectGroup/SelectGroup.vue'
 import {reactive, ref} from "vue";
+import {onClickOutside} from "@vueuse/core";
 
 const props = defineProps(['payments', 'page', 'links', 'onPress', 'onPayDue', 'onShowResult', 'filters'])
 
-const filterToggle = ref(false);
-let selectedItem = reactive('');
-let show = reactive(false);
+
+const menuAction = ref(null);
+let state = reactive({show: false, id: ''});
+let filterState = reactive({name: '', paymentStatus: '', userStatus: '', amount: ''});
 
 
-const onToggleFilter = () => {
-  filterToggle.value = !filterToggle.value;
-}
+onClickOutside(menuAction, () => {
+  state.show = false
+})
+
 const onShowMenu = (payment) => {
-  show = !show;
-  selectedItem = payment.id
-  console.log('in show menu', selectedItem, show)
-  console.log('display', show === true && payment.id === selectedItem)
+  state.show = !state.show;
+  state.id = payment.id
+  console.log('in show menu', state.id, state.show)
+  console.log('display', state.show === true && payment.id === state.id)
 }
-console.log('show', show, selectedItem)
+console.log('filter state', filterState)
 
 
 //add on click button for filter , toggle filter section
@@ -34,7 +37,7 @@ console.log('show', show, selectedItem)
     <div class="py-6 px-4 md:px-6 xl:px-7.5 flex sm:justify-end">
       <button
           class="text-xl font-light bg-body border-gray-100 border-2 px-6 py-3 rounded-xl flex items-center gap-2 text-primary"
-          @click="onToggleFilter">
+          @click="$emit('filterData',filterState)">
         <img
             :src="FilterImage"
             alt="filter icon">
@@ -43,20 +46,18 @@ console.log('show', show, selectedItem)
     </div>
 
     <!--filters    -->
-    <div v-if="filterToggle"
-         class="grid grid-cols-8 gap-4  py-4.5 px-4 sm:grid-cols-8 md:px-6 2xl:px-7.5"
-    >
-
+    <div class="grid grid-cols-8 gap-4  py-4.5 px-4 sm:grid-cols-8 md:px-6 2xl:px-7.5">
       <div class="col-span-2 flex items-center py-5">
         <InputGroup
+            v-model="filterState.name"
             customClasses="w-full "
             label="Name"
-            placeholder="name"
-            type="text"
+            placeholder="name" type="text"
         />
       </div>
       <div class="col-span-2 flex items-center py-5">
         <InputGroup
+            v-model="filterState.amount"
             customClasses="w-full "
             label="Amount"
             placeholder="amount"
@@ -65,6 +66,7 @@ console.log('show', show, selectedItem)
       </div>
       <div class="col-span-2 flex items-center py-5">
         <SelectGroup
+            v-model="filterState.userStatus"
             :options="['all','active','inactive']"
             customClasses=""
             label="Active Users"
@@ -77,6 +79,7 @@ console.log('show', show, selectedItem)
       </div>
       <div class="col-span-2 flex items-center py-5">
         <SelectGroup
+            v-model="filterState.paymentStatus"
             :options="['paid','unpaid','overdue']"
             cus="w-full "
             label="Payment Status"
@@ -94,7 +97,11 @@ console.log('show', show, selectedItem)
         class="grid grid-cols-6 border-t border-stroke border-gray-200 py-4.5 px-4 sm:grid-cols-11 md:px-6 2xl:px-7.5"
     >
       <div class="col-span-1 flex items-center py-5">
-        <p class="font-medium"></p>
+        <p class="font-medium">
+          <input
+              class='rounded-full border border-gray-300'
+              type="checkbox"/>
+        </p>
       </div>
       <div class="col-span-3 flex items-center py-5">
         <p class="font-medium text-secondary"> Name</p>
@@ -165,10 +172,11 @@ console.log('show', show, selectedItem)
       </div>
       <div class="col-span-1 space-y-1 py-4">
         <div class='relative'>
-          <img alt="dots menu" class="cursor-pointer" src="@/assets/images/dots-vertical.svg"
+          <img ref="menuAction" alt="dots menu" class="cursor-pointer" src="@/assets/images/dots-vertical.svg"
                @click="onShowMenu(payment)">
-          <div v-if="show === true && payment.id === selectedItem" class='absolute bg-white px-6 py-4 shadow-lg'
-               @click="onPayDue(payment);show=false">
+          <div v-if="state.show === true && payment.payment_made_at === null && payment.id === state.id"
+               class='absolute cursor-pointer bg-white px-6 py-4 shadow-lg'
+               @click="onPayDue(payment);state.show=false">
             Pay due
           </div>
         </div>
