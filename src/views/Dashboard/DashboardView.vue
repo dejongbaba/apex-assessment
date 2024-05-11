@@ -1,12 +1,13 @@
 <script>
-import {ref} from 'vue'
 import {mapActions, mapState} from "vuex";
 import DefaultLayout from '../../layouts/DefaultLayout.vue';
 import BreadcrumbDefault from '../../components/Breadcrumbs/BreadcrumbDefault.vue';
 import Table from '../../components/Table/Table.vue';
 
-const pageTitle = ref('Tables')
+// const pageTitle = ref('Tables')
+// const filters = defineModel({amount: '', name: '', userStatus: '', paymentStatus: ''});
 
+// console.log('filters', filters)
 export default {
   components: {DefaultLayout, BreadcrumbDefault, Table},
   data() {
@@ -21,6 +22,12 @@ export default {
     }, getPaymentResults(e) {
       console.log('eee', e.target.value)
       this.getPayments({currentPage: this.page, perPage: e.target.value})
+    },
+    onFilterTable() {
+
+    },
+    getTabPayments(tab) {
+      this.getPayments({currentPage: this.page, perPage: this.perPage, type: tab})
     }
   },
   computed: {
@@ -44,11 +51,12 @@ export default {
 <template>
   <DefaultLayout>
     <!-- Breadcrumb Start -->
-    <BreadcrumbDefault :pageTitle="pageTitle"/>
+    <BreadcrumbDefault :onTabPress="getTabPayments" pageTitle="Tables"/>
     <!-- Breadcrumb End -->
 
     <div class="flex flex-col gap-10">
-      <Table :links="links" :onPress="getPaginatedPayments" :onShowResult="getPaymentResults" :page="page"
+      <Table :links="links" :onPress="getPaginatedPayments" :onShowResult="getPaymentResults"
+             :page="page"
              :payments="payments"/>
     </div>
   </DefaultLayout>

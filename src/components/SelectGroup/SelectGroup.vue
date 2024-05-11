@@ -1,9 +1,10 @@
-<script lang="ts" setup>
+<script setup>
 import {defineProps, ref} from 'vue'
 
-const selectedOption = ref<string>('')
-const isOptionSelected = ref<boolean>(false)
+const selectedOption = ref('')
+const isOptionSelected = ref(false)
 const props = defineProps(['label', 'options', 'cus'])
+const name = defineModel('name')
 const changeTextColor = () => {
   isOptionSelected.value = true
 }
@@ -15,15 +16,16 @@ const changeTextColor = () => {
 
     <div class="relative z-20  ">
       <select
-          v-model="selectedOption"
-          :class="{ 'text-black dark:text-white': isOptionSelected }"
-          class="relative z-20 w-full appearance-none rounded border-0 bg-slate-100 py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-          @change="changeTextColor"
-      >
-        <option disabled selected value="">Type your subject</option>
-        <option value="USA">USA</option>
-        <option value="UK">UK</option>
-        <option value="Canada">Canada</option>
+          v-model="name"
+          class="relative z-20 w-full appearance-none rounded border-0 bg-slate-100 py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+        <!--          @change="changeTextColor"-->
+        >
+
+        <!--        <option disabled selected value="">Type your subject</option>-->
+        <option v-for="option in options" :value="option" class='bg-white px-4 py-3'>{{ option }}</option>
+        <!--        <option value="USA">USA</option>-->
+        <!--        <option value="UK">UK</option>-->
+        <!--        <option value="Canada">Canada</option>-->
       </select>
     </div>
   </div>

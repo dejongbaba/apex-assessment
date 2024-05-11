@@ -4,15 +4,15 @@ import InputGroup from '../InputGroup/InputGroup.vue'
 import SelectGroup from '../SelectGroup/SelectGroup.vue'
 import {ref} from "vue";
 
-const props = defineProps(['payments', 'page', 'links', 'onPress', 'onShowResult'])
+const props = defineProps(['payments', 'page', 'links', 'onPress', 'onShowResult', 'filters'])
 
-const filter = ref(false);
+const filterToggle = ref(false);
 
 
 const onToggleFilter = () => {
-  filter.value = !filter.value;
+  filterToggle.value = !filterToggle.value;
 }
-console.log('filter', filter.value)
+console.log('filter', filterToggle.value)
 
 //add on click button for filter , toggle filter section
 // add on filter select populate filter object
@@ -34,7 +34,7 @@ console.log('filter', filter.value)
     </div>
 
     <!--filters    -->
-    <div v-if="filter"
+    <div v-if="filterToggle"
          class="grid grid-cols-8 gap-4  py-4.5 px-4 sm:grid-cols-8 md:px-6 2xl:px-7.5"
     >
 
@@ -56,17 +56,19 @@ console.log('filter', filter.value)
       </div>
       <div class="col-span-2 flex items-center py-5">
         <SelectGroup
+            :options="['all','active','inactive']"
             customClasses=""
-            label="Active"
+            label="Active Users"
             placeholder="name"
         >
-          <option class='hover:bg-gray-300 transition-all bg-white ' value="all">All</option>
-          <option class='hover:bg-gray-300 transition-all bg-white ' value="active">Active</option>
-          <option class='hover:bg-gray-300 transition-all bg-white ' value="inactive">Inactive</option>
+          <!--          <option class='hover:bg-gray-300 transition-all bg-white ' value="all">All</option>-->
+          <!--          <option class='hover:bg-gray-300 transition-all bg-white ' value="active">Active</option>-->
+          <!--          <option class='hover:bg-gray-300 transition-all bg-white ' value="inactive">Inactive</option>-->
         </SelectGroup>
       </div>
       <div class="col-span-2 flex items-center py-5">
         <SelectGroup
+            :options="['paid','unpaid','overdue']"
             cus="w-full "
             label="Payment Status"
             placeholder="status"
@@ -123,26 +125,38 @@ console.log('filter', filter.value)
           <p class="text-sm font-medium text-secondary ">{{ payment.user.email }}</p>
         </div>
       </div>
-      <div class="col-span-2 py-4 sm:block  space-y-1">
-        <p class="text-sm font-medium bg-green-100 inline-block rounded-lg text-green-500 px-4 py-2">
-          &#x2022 {{ payment.user.status }}
-        </p>
-        <p class="text-sm font-normal  ">
-          Last Login: {{ payment.user.last_login_at }}
-        </p>
+      <div class="col-span-2 py-4 sm:block  ">
+        <div class="space-y-1">
+          <p :class="payment.user.status =='active'?'bg-green-100 text-green-500':'bg-yellow-100 text-yellow-500'"
+             class="text-sm font-medium capitalize  inline-block rounded-lg  px-4 py-2">
+            &#x2022 {{ payment.user.status }}
+          </p>
+          <p class="text-sm font-normal  ">
+            Last Login: {{ payment.user.last_login_at }}
+          </p>
+        </div>
       </div>
-      <div class="col-span-2 space-y-1 py-4">
-        <p class="text-sm font-medium text-black bg-red-100 inline-block rounded-lg text-red-500 px-4 py-2">
-          &#x2022 {{ payment.price }}</p>
-        <p class="text-sm font-normal text-black ">{{ payment.payment_made_at }}</p>
+      <div class="col-span-2  py-4">
+        <div class="space-y-1">
+          <p :class="payment.payment_made_at !== null ? 'bg-green-100 text-green-500' : payment.payment_made_at == null && new Date(payment.payment_expected_at) > new Date() ? 'bg-yellow-100 text-yellow-500' : new Date(payment.payment_expected_at) < new Date() ? 'bg-red-100 text-red-500' : ''"
+             class="text-sm capitalize font-medium  inline-block rounded-lg  px-4 py-2">
+            &#x2022 {{
+              payment.payment_made_at !== null ? "paid" : payment.payment_made_at === null && new Date(payment.payment_expected_at) > new Date() ? 'unpaid' : new Date(payment.payment_expected_at) < new Date() ? 'overdue' : ''
+            }}</p>
+          <p class="text-sm font-normal text-black ">{{
+              payment.payment_made_at ? 'Paid on: ' + payment.payment_made_at : payment.payment_made_at === null && new Date(payment.payment_expected_at) > new Date() ? 'Due on :' + payment.payment_expected_at : 'Dued on :' + payment.payment_expected_at
+            }}</p>
+        </div>
       </div>
-      <div class="col-span-2 space-y-1 py-4">
-        <p class="text-sm font-medium ">{{ payment.amount }}</p>
-        <p class="text-sm font-medium text-secondary ">{{ payment.currency }}</p>
+      <div class="col-span-2  py-4">
+        <div class="space-y-1">
+          <p class=" font-semibold text-lg ">${{ payment.amount }}</p>
+          <p class="text-sm font-medium text-secondary ">{{ payment.currency }}</p>
+        </div>
       </div>
       <div class="col-span-1 space-y-1 py-4">
         <div class='relative group'>
-          <img alt="dots menu" src="@/assets/images/dots-vertical.svg">
+          <img alt="dots menu" src="@/assets/images/dots-vertical.svg" @click="showAction(payment)">
           <div class='absolute  bg-white px-6 py-2 shadow'>
             Pay due
           </div>
