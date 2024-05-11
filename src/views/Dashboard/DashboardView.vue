@@ -15,7 +15,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      getPayments: 'payments/getPayments', getPagedPayments: 'payments/getPagedPayments'
+      getPayments: 'payments/getPayments',
+      getPagedPayments: 'payments/getPagedPayments',
+      makePayment: 'payments/createPayment'
     }),
     getPaginatedPayments(value) {
       this.getPagedPayments(value)
@@ -25,6 +27,9 @@ export default {
     },
     onFilterTable() {
 
+    },
+    onPay(payment) {
+      this.makePayment({payments: [payment]})
     },
     getTabPayments(tab) {
       this.getPayments({currentPage: this.page, perPage: this.perPage, type: tab})
@@ -55,7 +60,7 @@ export default {
     <!-- Breadcrumb End -->
 
     <div class="flex flex-col gap-10">
-      <Table :links="links" :onPress="getPaginatedPayments" :onShowResult="getPaymentResults"
+      <Table :links="links" :onPayDue="onPay" :onPress="getPaginatedPayments" :onShowResult="getPaymentResults"
              :page="page"
              :payments="payments"/>
     </div>

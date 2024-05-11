@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import {defineProps, ref} from "vue";
+import {defineProps, reactive} from "vue";
 
 const props = defineProps(['onPayDues', 'onTabPress'])
 
-let active = ref('all')
+let state = reactive({active: 'all'})
 
 const onSetActive = (val) => {
   console.log('log clicked', val)
-  active.value = val
+  state.active = val
   if (val == 'all') {
     props.onTabPress('')
   } else {
@@ -15,7 +15,7 @@ const onSetActive = (val) => {
   }
 }
 
-console.log('active', active.value)
+console.log('active', state.active)
 </script>
 <!--
 tab would emit actions
@@ -26,23 +26,25 @@ that
 <template>
   <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <nav>
-      <ul class='flex gap-4'>
-        <li :class="active.value==='all'?'border-b-3 border-b-primary' :''" class='text-secondary font-light text-base'
-            @click="onSetActive('all')">
+      <div class='flex gap-4'>
+        <button :class="state.active==='all'?' border-b-4 border-primary' :''"
+                class='text-secondary py-3 cursor-pointer font-light text-base'
+                @click="onSetActive('all')">
           All
-        </li>
-        <li :class="active.value==='paid'?'border-b-3 border-b-primary' :''" class='text-secondary font-light text-base'
-            @click="onSetActive('paid')">Paid
-        </li>
-        <li :class="active.value==='unpaid'?'border-b-3 border-b-primary' :''"
-            class='text-secondary font-light text-base'
-            @click="onSetActive('unpaid')">Unpaid
-        </li>
-        <li :class="active.value==='overdue'?'border-b-3 border-b-primary' :''"
-            class='text-secondary font-light text-base'
-            @click="onSetActive('overdue')">Overdue
-        </li>
-      </ul>
+        </button>
+        <button :class="state.active==='paid'?'border-b-4 border-primary' :''"
+                class='text-secondary py-3 cursor-pointer font-light text-base'
+                @click="onSetActive('paid')">Paid
+        </button>
+        <button :class="state.active==='unpaid'?'border-b-4 border-primary' :''"
+                class='text-secondary cursor-pointer font-light text-base py-3'
+                @click="onSetActive('unpaid')">Unpaid
+        </button>
+        <button :class="state.active==='overdue'?'border-b-4 border-primary' :''"
+                class='text-secondary cursor-pointer font-light text-base py-3'
+                @click="onSetActive('overdue')">Overdue
+        </button>
+      </div>
     </nav>
 
     <div>

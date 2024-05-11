@@ -2,17 +2,26 @@
 import FilterImage from '@/assets/images/filter.svg'
 import InputGroup from '../InputGroup/InputGroup.vue'
 import SelectGroup from '../SelectGroup/SelectGroup.vue'
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 
-const props = defineProps(['payments', 'page', 'links', 'onPress', 'onShowResult', 'filters'])
+const props = defineProps(['payments', 'page', 'links', 'onPress', 'onPayDue', 'onShowResult', 'filters'])
 
 const filterToggle = ref(false);
+let selectedItem = reactive('');
+let show = reactive(false);
 
 
 const onToggleFilter = () => {
   filterToggle.value = !filterToggle.value;
 }
-console.log('filter', filterToggle.value)
+const onShowMenu = (payment) => {
+  show = !show;
+  selectedItem = payment.id
+  console.log('in show menu', selectedItem, show)
+  console.log('display', show === true && payment.id === selectedItem)
+}
+console.log('show', show, selectedItem)
+
 
 //add on click button for filter , toggle filter section
 // add on filter select populate filter object
@@ -155,9 +164,11 @@ console.log('filter', filterToggle.value)
         </div>
       </div>
       <div class="col-span-1 space-y-1 py-4">
-        <div class='relative group'>
-          <img alt="dots menu" src="@/assets/images/dots-vertical.svg" @click="showAction(payment)">
-          <div class='absolute  bg-white px-6 py-2 shadow'>
+        <div class='relative'>
+          <img alt="dots menu" class="cursor-pointer" src="@/assets/images/dots-vertical.svg"
+               @click="onShowMenu(payment)">
+          <div v-if="show === true && payment.id === selectedItem" class='absolute bg-white px-6 py-4 shadow-lg'
+               @click="onPayDue(payment);show=false">
             Pay due
           </div>
         </div>
