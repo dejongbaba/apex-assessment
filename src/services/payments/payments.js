@@ -11,10 +11,10 @@ export const getPayments = async (params = {page: 1, per_page: 10}) => {
         return Promise.reject(e)
     }
 }
-export const getPaginatedPayments = async (link) => {
+export const getPaginatedPayments = async ({link, perPage,}) => {
     try {
         const res = await Api({
-            url: link,
+            url: `${link}&per_page=${perPage}`,
             baseURL: ''
         })
         return res.data

@@ -23,7 +23,7 @@ export default {
       makePayment: 'payments/createPayment'
     }),
     getPaginatedPayments(value) {
-      this.getPagedPayments(value)
+      this.getPagedPayments({link: value, perPage: this.perPage})
     }, getPaymentResults(e) {
       console.log('eee', e.target.value)
       this.getPayments({currentPage: this.page, perPage: e.target.value})
